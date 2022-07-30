@@ -1,14 +1,47 @@
 package com.example.demo.student;
 
 import java.time.LocalDate;
+import java.time.Period;
 
+import javax.annotation.Generated;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.sound.midi.Sequence;
 
+// To map this Student to our database:
+@Entity // Entity is for Hibernate
+@Table // Table is for table in our database
 public class Student {
 
+	// ***** Map Student class to our database *****
+	// Generates a Primary key
+	@Id
+	@SequenceGenerator (
+			name = "student_sequence",
+			sequenceName = "student_sequence",
+			allocationSize = 1
+			)
+	
+	@GeneratedValue(
+			strategy = GenerationType.SEQUENCE,
+			generator = "student_sequence"
+			)
+	
+		
+	
 	private Long id;
 	private String name;
 	private String email;
 	private LocalDate dob;
+	
+	
+	// This field, there is no need to be a column in our database. 
+	@Transient
 	private Integer age;
 
 	// No arg constructor
@@ -17,21 +50,19 @@ public class Student {
 
 	// Constructor
 	public Student(Long id, String name, String email, 
-			LocalDate dob, Integer age){
+			LocalDate dob){
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.dob = dob;
-		this.age = age;
 	}
 
 	// Constructor without ID since DATABASE will generate an ID (primary key)
 	public Student(String name, String email, 
-			LocalDate dob, Integer age){
+			LocalDate dob){
 		this.name = name;
 		this.email = email;
 		this.dob = dob;
-		this.age = age;
 	}
 
 
@@ -70,7 +101,7 @@ public class Student {
 	}
 
 	public Integer getAge() {
-		return age;
+		return Period.between(this.dob, LocalDate.now()).getYears();
 	}
 
 	public void setAge(Integer age) {
